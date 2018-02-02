@@ -1,0 +1,39 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2010
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShoppingList.Core", "ShoppingList.Core\ShoppingList.Core.csproj", "{A0333E83-DC62-4434-98CD-BDCE2BCB9C06}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShoppingList.Migration", "ShoppingList.Migration\ShoppingList.Migration.csproj", "{DF052F9A-4898-4CA0-90A0-8A6EDA938CE4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShoppingList.Droid", "ShoppingList.Droid\ShoppingList.Droid.csproj", "{B343758D-7A19-4B4B-B0E4-5EA080DB86DB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A0333E83-DC62-4434-98CD-BDCE2BCB9C06}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A0333E83-DC62-4434-98CD-BDCE2BCB9C06}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A0333E83-DC62-4434-98CD-BDCE2BCB9C06}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A0333E83-DC62-4434-98CD-BDCE2BCB9C06}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DF052F9A-4898-4CA0-90A0-8A6EDA938CE4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DF052F9A-4898-4CA0-90A0-8A6EDA938CE4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DF052F9A-4898-4CA0-90A0-8A6EDA938CE4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DF052F9A-4898-4CA0-90A0-8A6EDA938CE4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B343758D-7A19-4B4B-B0E4-5EA080DB86DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B343758D-7A19-4B4B-B0E4-5EA080DB86DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B343758D-7A19-4B4B-B0E4-5EA080DB86DB}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{B343758D-7A19-4B4B-B0E4-5EA080DB86DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B343758D-7A19-4B4B-B0E4-5EA080DB86DB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B343758D-7A19-4B4B-B0E4-5EA080DB86DB}.Release|Any CPU.Deploy.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9925F040-A738-492F-9F3A-B5514613D8EA}
+	EndGlobalSection
+EndGlobal

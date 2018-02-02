@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+	  xmlns:app="http://schemas.android.com/apk/res-auto" >
+	<item
+	   android:id="@+id/menuList"
+	   android:icon="@drawable/ic_playlist_add_black_24dp"
+	   app:showAsAction="ifRoom"
+	   android:title="Make list" />
+	<item
+		 android:id="@+id/menuShop"
+		 android:icon="@drawable/ic_shop_black_24dp"
+		 app:showAsAction="ifRoom"
+		 android:title="Shop" />
+	<item
+		 android:id="@+id/menuSortItems"
+		 android:icon="@drawable/ic_sort_by_alpha_black_24dp"
+		 android:visible="false"
+		 app:showAsAction="ifRoom"
+		 android:title="Sort by item" />
+	<item
+		 android:id="@+id/menuSortGroups"
+		 android:icon="@drawable/ic_sort_black_24dp"
+		 android:visible="false"
+		 app:showAsAction="ifRoom"
+		 android:title="Sort by group" />
+	<item
+		 android:id="@+id/menuPreferences"
+		 app:showAsAction="never"
+		 android:title="Preferences" />
+</menu>
