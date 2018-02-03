@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using ShoppingList.Core.Model;
+﻿using ShoppingList.Core.Model;
 
 namespace ShoppingList.Core.Services
 {
-    interface IListService
+	interface IListService
     {
 		List GetList( string listName );
 		List GetCurrentList();

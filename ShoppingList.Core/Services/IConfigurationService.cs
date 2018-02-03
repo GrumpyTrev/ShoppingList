@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ShoppingList.Core.Services
+﻿namespace ShoppingList.Core.Services
 {
-    interface IConfigurationService
+	interface IConfigurationService
     {
 		string DatabasePath
 		{

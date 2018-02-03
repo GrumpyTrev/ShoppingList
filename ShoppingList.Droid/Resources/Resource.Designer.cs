@@ -1768,20 +1768,20 @@ namespace ShoppingList.Droid
 			// aapt resource value: 0x7f0a005d
 			public const int media_actions = 2131361885;
 			
-			// aapt resource value: 0x7f0a006b
-			public const int menuList = 2131361899;
-			
 			// aapt resource value: 0x7f0a006f
-			public const int menuPreferences = 2131361903;
-			
-			// aapt resource value: 0x7f0a006c
-			public const int menuShop = 2131361900;
+			public const int menuList = 2131361903;
 			
 			// aapt resource value: 0x7f0a006e
-			public const int menuSortGroups = 2131361902;
+			public const int menuPreferences = 2131361902;
+			
+			// aapt resource value: 0x7f0a006b
+			public const int menuShop = 2131361899;
 			
 			// aapt resource value: 0x7f0a006d
-			public const int menuSortItems = 2131361901;
+			public const int menuSortGroups = 2131361901;
+			
+			// aapt resource value: 0x7f0a006c
+			public const int menuSortItems = 2131361900;
 			
 			// aapt resource value: 0x7f0a001c
 			public const int middle = 2131361820;
@@ -2117,7 +2117,10 @@ namespace ShoppingList.Droid
 		{
 			
 			// aapt resource value: 0x7f0c0000
-			public const int MainMenu = 2131492864;
+			public const int ListingMenu = 2131492864;
+			
+			// aapt resource value: 0x7f0c0001
+			public const int ShoppingMenu = 2131492865;
 			
 			static Menu()
 			{

@@ -2,11 +2,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
 	  xmlns:app="http://schemas.android.com/apk/res-auto" >
 	<item
-	   android:id="@+id/menuList"
-	   android:icon="@drawable/ic_playlist_add_black_24dp"
-	   app:showAsAction="ifRoom"
-	   android:title="Make list" />
-	<item
 		 android:id="@+id/menuShop"
 		 android:icon="@drawable/ic_shop_black_24dp"
 		 app:showAsAction="ifRoom"
@@ -14,7 +9,7 @@
 	<item
 		 android:id="@+id/menuSortItems"
 		 android:icon="@drawable/ic_sort_by_alpha_black_24dp"
-		 android:visible="false"
+		 android:visible="true"
 		 app:showAsAction="ifRoom"
 		 android:title="Sort by item" />
 	<item

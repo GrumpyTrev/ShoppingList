@@ -1,1 +1,0 @@
-﻿{"ContextClassName":"ShoppingListContext","DatabaseType":3,"IdReplace":false,"IncludeConnectionString":true,"OutputPath":"Model","ProjectRootNamespace":"ShoppingList.Core","SelectedToBeGenerated":0,"Tables":["Group","Item","ItemInList","List"],"UseDatabaseNames":false,"UseFluentApiOnly":true,"UseHandleBars":false,"UseInflector":false}

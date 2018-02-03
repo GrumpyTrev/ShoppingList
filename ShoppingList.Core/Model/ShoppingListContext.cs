@@ -1,10 +1,8 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace ShoppingList.Core.Model
 {
-    public partial class ShoppingListContext : DbContext
+	public partial class ShoppingListContext : DbContext
     {
         public virtual DbSet<Group> Groups { get; set; }
         public virtual DbSet<Item> Items { get; set; }

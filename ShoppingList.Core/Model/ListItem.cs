@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace ShoppingList.Core.Model
+﻿namespace ShoppingList.Core.Model
 {
-    public partial class ListItem
+	public partial class ListItem
     {
         public long Id { get; set; }
         public long ListId { get; set; }

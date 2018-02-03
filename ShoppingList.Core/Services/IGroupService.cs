@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using ShoppingList.Core.Model;
 
 namespace ShoppingList.Core.Services
 {
-    interface IGroupService
+	interface IGroupService
     {
 		List<Group> GetGroups();
 		List<object> GetGroupsAndItems();

@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace ShoppingList.Core.Model
 {
-    public partial class Group
+	public partial class Group
     {
         public Group()
         {

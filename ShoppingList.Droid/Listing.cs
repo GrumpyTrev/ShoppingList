@@ -19,14 +19,10 @@ namespace ShoppingList.Droid
 		/// Create a Shopping class for the specified activity
 		/// </summary>
 		/// <param name="activityContext">The activity owning this class</param>
-		public Listing( MainActivity activityContext )
+		public Listing( ShoppingActivity activityContext )
 		{
 			activity = activityContext;
 
-			// Get the current group item data and provide it to view responsible for displaying it
-			itemsView = activity.FindViewById<ListView>( Resource.Id.availableItems );
-			adapter = new GroupItemAdapter( activity, new GroupService().GetGroupsAndItems().ToArray() );
-			itemsView.Adapter = adapter;
 		}
 
 		public void SetActive()
@@ -82,19 +78,9 @@ namespace ShoppingList.Droid
 		}
 
 		/// <summary>
-		/// The view displaying the group item list
-		/// </summary>
-		private ListView itemsView = null;
-
-		/// <summary>
-		/// The adapter providing the data to the view
-		/// </summary>
-		private GroupItemAdapter adapter = null;
-
-		/// <summary>
 		/// The parent MainActivity
 		/// </summary>
-		private MainActivity activity = null;
+		private ShoppingActivity activity = null;
 
 		/// <summary>
 		/// Toolbar titles
