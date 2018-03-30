@@ -66,6 +66,17 @@ namespace ShoppingList.Droid
 							// Save the view
 							selectedView = child;
 							selectedPosition = monitoredView.GetPositionForView( child );
+
+							// Check if this child can be selected
+							if ( ItemSelectionHandler != null )
+							{
+								SelectionEventArgs args = new SelectionEventArgs { Position = selectedPosition, ViewSelected = child };
+								ItemSelectionHandler.Invoke( this, args );
+								if ( args.Cancel == true )
+								{
+									selectedView = null;
+								}
+							}
 						}
 						else
 						{
@@ -94,6 +105,8 @@ namespace ShoppingList.Droid
 						// Record the raw starting X position to determine how far to translate the view in response to user
 						// moves
 						initialDownX = touchEvent.RawX;
+
+						touchConsumed = true;
 					}
 
 					break;
@@ -185,6 +198,9 @@ namespace ShoppingList.Droid
 						bool flingRightDetected = false;
 						bool flingLeftDetected = false;
 
+						// Assume a slow drag rather than a fast fling
+						bool wasFlung = false;
+
 						// Add the current movement to those held by the tracker and detemine the curent velocities
 						velocity.AddMovement( touchEvent );
 						velocity.ComputeCurrentVelocity( 1000 );
@@ -198,7 +214,7 @@ namespace ShoppingList.Droid
 						// If the absolute velocity is greater than the fling minimum and the movement is still
 						// in a mainly horizontal direction then its a fling.
 						// Also ensure that the current delta is in the same direction as the fling, i.e. make sure that
-						// the view has been reposition back to where it started before processing a fling in the opposite
+						// the view has been repositioned back to where it started before processing a fling in the opposite
 						// direction
 						if ( ( absXVelocity > minimumFlingVelocity ) && ( absXVelocity > ( absYVelocity * 2 ) ) )
 						{
@@ -210,6 +226,7 @@ namespace ShoppingList.Droid
 								{
 									flingRightDetected = ( velocity.XVelocity > 0 );
 									flingLeftDetected = ( velocity.XVelocity < 0 );
+									wasFlung = true;
 								}
 							}
 						}
@@ -242,7 +259,7 @@ namespace ShoppingList.Droid
 								SimpleAnimate( animatedView, monitoredView.Width, 
 									new ObjectAnimatorListenerAdapter( ( animation ) =>
 									{
-										FlingRightHandler?.Invoke( this, selectedPosition );
+										FlingRightHandler?.Invoke( this, new SwipeEventArgs{Position = selectedPosition, WasFlung = wasFlung }  );
 										if ( animatedView != monitoredView )
 										{
 											animatedView.TranslationX = 0;
@@ -262,7 +279,7 @@ namespace ShoppingList.Droid
 								SimpleAnimate( animatedView, -monitoredView.Width,
 									new ObjectAnimatorListenerAdapter( ( animation ) =>
 									{
-										FlingLeftHandler?.Invoke( this, selectedPosition );
+										FlingLeftHandler?.Invoke( this, new SwipeEventArgs { Position = selectedPosition, WasFlung = wasFlung } );
 										if ( animatedView != monitoredView )
 										{
 											animatedView.TranslationX = 0;
@@ -328,7 +345,7 @@ namespace ShoppingList.Droid
 			return ( ( ( LeftSwipeAllowed == true ) && ( delta < 0 ) ) || ( ( RightSwipeAllowed == true ) && ( delta > 0 ) ) );
 		}
 
-		private void SimpleAnimate( View viewToAnimate, int finalTranslate, ObjectAnimatorListenerAdapter listener )
+		private static void SimpleAnimate( View viewToAnimate, int finalTranslate, ObjectAnimatorListenerAdapter listener )
 		{
 			viewToAnimate.Animate()
 				.TranslationX( finalTranslate )
@@ -451,11 +468,32 @@ namespace ShoppingList.Droid
 		/// <summary>
 		/// The fling right event handler
 		/// </summary>
-		public event EventHandler< int > FlingRightHandler;
+		public event EventHandler< SwipeEventArgs > FlingRightHandler;
 
 		/// <summary>
 		/// The fling left event handler
 		/// </summary>
-		public event EventHandler< int > FlingLeftHandler;
+		public event EventHandler< SwipeEventArgs > FlingLeftHandler;
+
+		/// <summary>
+		/// Swipe event arguments
+		/// </summary>
+		public class SwipeEventArgs : EventArgs
+		{
+			public int Position { get; set; }
+			public bool WasFlung { get; set; }
+		}
+
+		public event EventHandler< SelectionEventArgs > ItemSelectionHandler;
+
+		/// <summary>
+		/// Swipe event arguments
+		/// </summary>
+		public class SelectionEventArgs: EventArgs
+		{
+			public int Position { get; set; }
+			public View ViewSelected { get; set; }
+			public bool Cancel{ get; set; }
+		}
 	}
 }

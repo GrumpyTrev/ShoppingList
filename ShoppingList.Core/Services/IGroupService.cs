@@ -7,5 +7,6 @@ namespace ShoppingList.Core.Services
     {
 		List<Group> GetGroups();
 		List<object> GetGroupsAndItems();
-    }
+		List<Item> GetItems();
+	}
 }

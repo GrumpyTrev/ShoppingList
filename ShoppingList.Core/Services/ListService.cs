@@ -4,7 +4,7 @@ using ShoppingList.Core.Model;
 
 namespace ShoppingList.Core.Services
 {
-	public class ListService: IListService
+	internal class ListService: IListService
 	{
 		public List GetList( string listName)
 		{
@@ -28,7 +28,7 @@ namespace ShoppingList.Core.Services
 			return GetList( BasketListName );
 		}
 
-		public void DeleteListItem( string listName, long id )
+		public void DeleteListItem( string listName, long itemId, int quantity )
 		{
 			using ( ShoppingListContext context = ShoppingListContextFactory.Create() )
 			{
@@ -38,25 +38,33 @@ namespace ShoppingList.Core.Services
 
 				if ( targetList != null )
 				{
-					ListItem itemToDelete = targetList.ListItems.Where( item => item.Id == id ).FirstOrDefault();
+					ListItem itemToDelete = targetList.ListItems.Where( item => item.Id == itemId ).FirstOrDefault();
 
 					if ( itemToDelete != null )
 					{
-						context.ListItems.Remove( itemToDelete );
+						if ( itemToDelete.Quantity <= quantity )
+						{
+							context.ListItems.Remove( itemToDelete );
+						}
+						else
+						{
+							itemToDelete.Quantity -= quantity;
+						}
+
 						context.SaveChanges();
 					}
 				}
 			}
 		}
 
-		public void DeleteListItemFromCurrentList( long id )
+		public void RemoveItemFromCurrentList( long itemId, int quantity )
 		{
-			DeleteListItem( CurrentListName, id );
+			DeleteListItem( CurrentListName, itemId, quantity );
 		}
 
-		public void DeleteListItemFromBasketList( long id )
+		public void RemoveItemFromBasketList( long itemId, int quantity )
 		{
-			DeleteListItem( BasketListName, id );
+			DeleteListItem( BasketListName, itemId, quantity );
 		}
 
 		public void AddItemToList( string listName, long itemId, int quantity )
@@ -70,8 +78,18 @@ namespace ShoppingList.Core.Services
 
 				if ( targetList != null )
 				{
-					//targetList.ListItems.Add( new ListItem { ItemId = itemId, ListId = targetList.Id, Quantity = quantity } );
-					context.ListItems.Add( new ListItem { ItemId = itemId, ListId = targetList.Id, Quantity = quantity } );
+					// If there is already an item with the same identity in the list then simply update its quantity
+					ListItem itemToUpdate = targetList.ListItems.Where( item => item.ItemId == itemId ).FirstOrDefault();
+
+					if ( itemToUpdate != null )
+					{
+						itemToUpdate.Quantity += quantity;
+					}
+					else
+					{
+						context.ListItems.Add( new ListItem { ItemId = itemId, ListId = targetList.Id, Quantity = quantity } );
+					}
+
 					context.SaveChanges();
 				}
 			}

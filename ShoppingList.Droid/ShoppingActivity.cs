@@ -1,205 +1,153 @@
 ﻿using Android.App;
 using Android.OS;
-using ShoppingList.Core.Services;
 using Toolbar = Android.Support.V7.Widget.Toolbar;
 using Android.Support.V7.App;
 using Android.Views;
 using Android.Content;
-using System.Linq;
 using Android.Widget;
+using ShoppingList.Core;
+using ShoppingList.Core.Controllers;
 using ShoppingList.Core.Model;
+using System;
 
 namespace ShoppingList.Droid
 {
 	[Activity( Label = "Shopping List", MainLauncher = false )]
 	public class ShoppingActivity: AppCompatActivity
 	{
+		/// <summary>
+		/// Called when the activity is first displayed
+		/// Initialise the main view and the action bar and determine what should be displayed
+		/// </summary>
+		/// <param name="savedInstanceState"></param>
 		protected override void OnCreate( Bundle savedInstanceState )
 		{
 			base.OnCreate( savedInstanceState );
 
-			// Specify the target specific part of the database path
-			new ConfigurationService().DatabasePath = Android.OS.Environment.ExternalStorageDirectory.AbsolutePath;
-
 			SetContentView( Resource.Layout.ShoppingScreen );
 
+			// Initialise the action bar 
 			SetSupportActionBar( FindViewById<Toolbar>( Resource.Id.toolbar ) );
-			SupportActionBar.Title = ShoppingTitle;
+
+			// Create a toast item to display feedback
+			toast = Toast.MakeText( this, "", ToastLength.Short );
 
 			// We are now making a list
-			GetSharedPreferences( IsShoppingStateString, FileCreationMode.Private ).Edit().PutBoolean( IsShoppingStateString, true ).Commit();
+			PersistentStorage.IsShopping = true;
 
-			// Get the current shopping list data and provide it to view responsible for displaying it
-			itemsView = FindViewById<ListView>( Resource.Id.shoppingItems );
-			adapter = new ListItemAdapter( this, new ListService().GetCurrentList().ListItems.ToArray() );
-			itemsView.Adapter = adapter;
+			// Create the views that are going to display the data
+			ListView currentItemsView = FindViewById<ListView>( Resource.Id.shoppingItems );
+			ListView basketItemsView = FindViewById<ListView>( Resource.Id.basketItems );
 
-			// Do the same for the basket list
-			basketView = FindViewById<ListView>( Resource.Id.basketItems );
-			basketAdapter = new ListItemAdapter( this, new ListService().GetBasketList().ListItems.ToArray() );
-			basketView.Adapter = basketAdapter;
+			// Wrap up these views to add touch handling
+			currentList = new CurrentListWrapper( this, currentItemsView, basketItemsView, CurrentListTitle );
+			basketList = new ShoppingBasketListWrapper( this, basketItemsView, currentItemsView, BasketListTitle );
 
-			// Always start showing the current list - could save this
-			basketView.Visibility = Android.Views.ViewStates.Gone;
-			itemsView.TranslationX = 0;
+			// Hook into the basket view being shown event
+			currentList.RevealActive += ( object sender, EventArgs args ) => 
+			{
+				SupportActionBar.Title = basketList.ToolbarTitle;
+			};
 
-			InitialiseShoppingTouchHandling();
-			InitialiseBasketTouchHandling();
+			// Handle the swiping of a current item
+			currentList.ItemSwiped += ( object sender, ListViewWrapper<ListItem>.SwipeItemEventArgs< ListItem > args ) =>
+			{
+				int itemsMoved = ShoppingController.CurrentItemSwiped( args.Item, args.WasFlung );
+				if ( itemsMoved > 1 )
+				{
+					toast.SetText( string.Format( "{0} {1} put in basket", itemsMoved, args.Item.Item.Name ) );
+				}
+				else
+				{
+					toast.SetText( string.Format( "{0} put in basket", args.Item.Item.Name ) );
+				}
+
+				toast.Show();
+
+				currentList.DataSetChanged();
+				basketList.DataSetChanged();
+			};
+
+			// Hook into the current list view being shown event
+			basketList.RevealActive += ( object sender, EventArgs args ) => 
+			{
+				SupportActionBar.Title = currentList.ToolbarTitle;
+			};
+
+			// Handle the swiping of a basket item
+			basketList.ItemSwiped += ( object sender, ListViewWrapper<ListItem>.SwipeItemEventArgs<ListItem> args ) =>
+			{
+				int itemsMoved = ShoppingController.BasketItemSwiped( args.Item, args.WasFlung );
+
+				if ( itemsMoved > 1 )
+				{
+					toast.SetText( string.Format( "{0} {1} removed from basket", itemsMoved, args.Item.Item.Name ) );
+				}
+				else
+				{
+					toast.SetText( string.Format( "{0} removed from basket", args.Item.Item.Name ) );
+				}
+
+				toast.Show();
+
+				currentList.DataSetChanged();
+				basketList.DataSetChanged();
+			};
+
+			// Always start showing the current list
+			basketItemsView.Visibility = Android.Views.ViewStates.Gone;
+			currentItemsView.TranslationX = 0;
+			SupportActionBar.Title = currentList.ToolbarTitle;
 		}
 
-		protected override void OnPause()
-		{
-			base.OnPause();
-		}
-
+		/// <summary>
+		/// Called when the activity is first displayed
+		/// </summary>
+		/// <param name="menu"></param>
+		/// <returns></returns>
 		public override bool OnCreateOptionsMenu( IMenu menu )
 		{
 			MenuInflater.Inflate( Resource.Menu.ShoppingMenu, menu );
 			return base.OnCreateOptionsMenu( menu );
 		}
 
-		public override bool OnPrepareOptionsMenu( IMenu menu )
-		{
-			return base.OnPrepareOptionsMenu( menu );
-		}
-
+		/// <summary>
+		/// Called when a menu item has been selected
+		/// </summary>
+		/// <param name="item"></param>
+		/// <returns></returns>
 		public override bool OnOptionsItemSelected( IMenuItem item )
 		{
 			if ( item.ItemId == Resource.Id.menuList )
 			{
+				// Start the listing activity
 				StartActivity( new Intent( this, typeof( ListingActivity ) ).AddFlags( ActivityFlags.NoHistory ) );
+				Finish();
 			}
 
 			return base.OnOptionsItemSelected( item );
 		}
 
 		/// <summary>
-		/// Set up a touch handler and events for the shopping list
-		/// </summary>
-		private void InitialiseShoppingTouchHandling()
-		{
-			// Setup a touch listener for the current shopping list
-			ListViewTouchListener shoppingListListener = new ListViewTouchListener( itemsView );
-			itemsView.SetOnTouchListener( shoppingListListener );
-
-			shoppingListListener.RightSwipeAllowed = true;
-			shoppingListListener.RightGroupSwipe = false;
-
-			shoppingListListener.LeftSwipeAllowed = true;
-			shoppingListListener.LeftGroupSwipe = true;
-			shoppingListListener.RightRevealView = basketView;
-
-			// Hook into the FlingRight event
-			shoppingListListener.FlingRightHandler += ( object sender, int position ) =>
-			{
-				// Move the selected item to the basket list
-				if ( position != -1 )
-				{
-					// Get the ListItem from the adapter
-					ListItem item = adapter[ position ];
-
-					// Delete the item from the current list
-					ListService service = new ListService();
-					service.DeleteListItemFromCurrentList( item.Id );
-
-					// Add the item to the basket list
-					service.AddItemToBasketList( item.ItemId, 1 );
-
-					// Refresh the data for both lists
-					RefreshLists();
-				}
-			};
-
-			// Hook into the FlingLeft event
-			shoppingListListener.FlingLeftHandler += ( object sender, int position ) => 
-			{
-				// The basket should now be shown so update the title
-				SupportActionBar.Title = BasketTitle;
-			};
-		}
-
-		/// <summary>
-		/// Set up a touch handler and events for the shopping list
-		/// </summary>
-		private void InitialiseBasketTouchHandling()
-		{
-			// Setup a touch listener for the basket list
-			ListViewTouchListener basketListListener = new ListViewTouchListener( basketView );
-			basketView.SetOnTouchListener( basketListListener );
-
-			basketListListener.RightSwipeAllowed = true;
-			basketListListener.RightGroupSwipe = true;
-			basketListListener.LeftRevealView = itemsView;
-
-			basketListListener.LeftSwipeAllowed = true;
-			basketListListener.LeftGroupSwipe = false;
-
-			basketListListener.FlingRightHandler += ( object sender, int position ) => 
-			{
-				// The shopping list should now be show so update the title
-				SupportActionBar.Title = ShoppingTitle;
-			};
-
-			// Hook into the FlingLeft event
-			basketListListener.FlingLeftHandler += ( object sender, int position ) => 
-			{
-				// Move the selected item back to the shopping list
-				if ( position != -1 )
-				{
-					// Get the ListItem from the adapter
-					ListItem item = basketAdapter[ position ];
-
-					// Delete the item from the basket list
-					ListService service = new ListService();
-					service.DeleteListItemFromBasketList( item.Id );
-
-					// Add the item to the current list
-					service.AddItemToCurrentList( item.ItemId, 1 );
-
-					// Refresh the data for both lists
-					RefreshLists();
-				}
-			};
-		}
-
-		/// <summary>
-		/// Refesh the shopping and basket lists from the data source
-		/// </summary>
-		private void RefreshLists()
-		{
-			adapter.Items = new ListService().GetCurrentList().ListItems.ToArray();
-			adapter.NotifyDataSetChanged();
-			basketAdapter.Items = new ListService().GetBasketList().ListItems.OrderByDescending( item => item.Id ).ToArray();
-			basketAdapter.NotifyDataSetChanged();
-		}
-
-		/// <summary>
 		/// The view displaying the current shopping list
 		/// </summary>
-		private ListView itemsView = null;
-
-		/// <summary>
-		/// The adapter providing the data to the view
-		/// </summary>
-		private ListItemAdapter adapter = null;
+		private CurrentListWrapper currentList = null;
 
 		/// <summary>
 		/// The view displaying the shopping basket
 		/// </summary>
-		private ListView basketView = null;
+		private ShoppingBasketListWrapper basketList = null;
 
 		/// <summary>
-		/// The adapter providing the data to the basket view
+		/// Feedback for moving items to and from the basket
 		/// </summary>
-		private ListItemAdapter basketAdapter = null;
+		private Toast toast = null;
 
 		/// <summary>
 		/// Toolbar titles
 		/// </summary>
-		private const string ShoppingTitle = "Shopping";
-		private const string BasketTitle = "Whats in your basket";
-
-		private const string IsShoppingStateString = "isShopping";
+		private const string BasketListTitle = "Whats in your basket";
+		private const string CurrentListTitle = "Shopping";
 	}
 }
 

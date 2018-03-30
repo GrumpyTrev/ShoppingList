@@ -38,6 +38,7 @@
     <AotAssemblies>false</AotAssemblies>
     <EnableLLVM>false</EnableLLVM>
     <BundleAssemblies>false</BundleAssemblies>
+    <CodeAnalysisRuleSet>ExtendedDesignGuidelineRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugSymbols>True</DebugSymbols>
@@ -155,9 +156,16 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AvailableListWrapper.cs" />
+    <Compile Include="DataAdapterInterface.cs" />
+    <Compile Include="ItemAdapter.cs" />
     <Compile Include="GroupItemAdapter.cs" />
     <Compile Include="ListItemAdapter.cs" />
     <Compile Include="ListingActivity.cs" />
+    <Compile Include="ListViewWrapper.cs" />
+    <Compile Include="ShoppingBasketListWrapper.cs" />
+    <Compile Include="CurrentListWrapper.cs" />
+    <Compile Include="StorageMechanism.cs" />
     <Compile Include="WrapperActivity.cs" />
     <Compile Include="ShoppingActivity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

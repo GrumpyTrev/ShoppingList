@@ -10,10 +10,7 @@
         android:layout_height="wrap_content"
         android:minHeight="?attr/actionBarSize"
         android:background="@color/listBackground"
-		app:titleTextAppearance="@style/Toolbar.TitleText"
-		/>
-	<!--       android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
--->
+		app:titleTextAppearance="@style/Toolbar.TitleText" />
 	<RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">

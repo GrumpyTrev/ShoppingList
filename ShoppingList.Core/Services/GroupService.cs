@@ -5,7 +5,7 @@ using ShoppingList.Core.Model;
 
 namespace ShoppingList.Core.Services
 {
-	public class GroupService: IGroupService
+	internal class GroupService: IGroupService
 	{
 		public List<Group> GetGroups()
 		{
@@ -21,7 +21,7 @@ namespace ShoppingList.Core.Services
 
 			using ( ShoppingListContext context = ShoppingListContextFactory.Create() )
 			{
-				foreach ( Group iteeGroup in context.Groups.Include( group => group.Items ) )
+				foreach ( Group iteeGroup in context.Groups.Include( group => group.Items ).OrderBy( group => group.Name ) )
 				{
 					returnedList.Add( iteeGroup );
 
@@ -34,5 +34,24 @@ namespace ShoppingList.Core.Services
 
 			return returnedList;
 		}
+
+		public List<Item> GetItems()
+		{
+			List<Item> returnedList = new List<Item>();
+
+			using ( ShoppingListContext context = ShoppingListContextFactory.Create() )
+			{
+				foreach ( Group iteeGroup in context.Groups.Include( group => group.Items ).OrderBy( group => group.Name ) )
+				{
+					foreach ( Item iterItem in iteeGroup.Items )
+					{
+						returnedList.Add( iterItem );
+					}
+				}
+			}
+
+			return returnedList.OrderBy( item => item.Name ).ToList();
+		}
+
 	}
 }
