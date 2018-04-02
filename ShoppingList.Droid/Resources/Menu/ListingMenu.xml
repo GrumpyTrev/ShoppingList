@@ -19,6 +19,12 @@
 		 app:showAsAction="ifRoom"
 		 android:title="Sort by group" />
 	<item
+		 android:id="@+id/menuSortNoSort"
+		 android:icon="@drawable/ic_no_sort_black_24dp"
+		 android:visible="false"
+		 app:showAsAction="ifRoom"
+		 android:title="Unsorted items" />
+	<item
 		 android:id="@+id/menuPreferences"
 		 app:showAsAction="never"
 		 android:title="Preferences" />

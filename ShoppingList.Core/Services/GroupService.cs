@@ -35,23 +35,22 @@ namespace ShoppingList.Core.Services
 			return returnedList;
 		}
 
-		public List<Item> GetItems()
+		public List<Item> GetItems( bool ordered )
 		{
 			List<Item> returnedList = new List<Item>();
 
 			using ( ShoppingListContext context = ShoppingListContextFactory.Create() )
 			{
-				foreach ( Group iteeGroup in context.Groups.Include( group => group.Items ).OrderBy( group => group.Name ) )
+				foreach ( Group itemGroup in context.Groups.Include( group => group.Items ).OrderBy( group => group.Name ) )
 				{
-					foreach ( Item iterItem in iteeGroup.Items )
+					foreach ( Item iterItem in itemGroup.Items )
 					{
 						returnedList.Add( iterItem );
 					}
 				}
 			}
 
-			return returnedList.OrderBy( item => item.Name ).ToList();
+			return ( ordered == true ) ? returnedList.OrderBy( item => item.Name ).ToList() : returnedList;
 		}
-
 	}
 }

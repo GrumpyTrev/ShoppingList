@@ -1573,19 +1573,22 @@ namespace ShoppingList.Droid
 			public const int abc_vector_test = 2130837586;
 			
 			// aapt resource value: 0x7f020053
-			public const int ic_playlist_add_black_24dp = 2130837587;
+			public const int ic_no_sort_black_24dp = 2130837587;
 			
 			// aapt resource value: 0x7f020054
-			public const int ic_shop_black_24dp = 2130837588;
+			public const int ic_playlist_add_black_24dp = 2130837588;
 			
 			// aapt resource value: 0x7f020055
-			public const int ic_sort_black_24dp = 2130837589;
+			public const int ic_shop_black_24dp = 2130837589;
 			
 			// aapt resource value: 0x7f020056
-			public const int ic_sort_by_alpha_black_24dp = 2130837590;
+			public const int ic_sort_black_24dp = 2130837590;
 			
 			// aapt resource value: 0x7f020057
-			public const int notification_template_icon_bg = 2130837591;
+			public const int ic_sort_by_alpha_black_24dp = 2130837591;
+			
+			// aapt resource value: 0x7f020058
+			public const int notification_template_icon_bg = 2130837592;
 			
 			static Drawable()
 			{
@@ -1768,11 +1771,11 @@ namespace ShoppingList.Droid
 			// aapt resource value: 0x7f0a0060
 			public const int media_actions = 2131361888;
 			
-			// aapt resource value: 0x7f0a0071
-			public const int menuList = 2131361905;
+			// aapt resource value: 0x7f0a0072
+			public const int menuList = 2131361906;
 			
-			// aapt resource value: 0x7f0a0070
-			public const int menuPreferences = 2131361904;
+			// aapt resource value: 0x7f0a0071
+			public const int menuPreferences = 2131361905;
 			
 			// aapt resource value: 0x7f0a006d
 			public const int menuShop = 2131361901;
@@ -1782,6 +1785,9 @@ namespace ShoppingList.Droid
 			
 			// aapt resource value: 0x7f0a006e
 			public const int menuSortItems = 2131361902;
+			
+			// aapt resource value: 0x7f0a0070
+			public const int menuSortNoSort = 2131361904;
 			
 			// aapt resource value: 0x7f0a001c
 			public const int middle = 2131361820;

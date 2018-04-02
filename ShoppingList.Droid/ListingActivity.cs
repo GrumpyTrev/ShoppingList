@@ -45,7 +45,10 @@ namespace ShoppingList.Droid
 
 			// Wrap up these views to add touch handling
 			currentList = new CurrentListWrapper( this, currentItemsView, availableItemsView, CurrentListTitle );
-			availableList = new AvailableListWrapper( this, availableItemsView, currentItemsView, AvailableItemsTitle );
+
+			availableList = new AvailableListWrapper( this, availableItemsView, currentItemsView, AvailableItemsTitle,
+				new ItemSort( new ItemSort.SortState[] { ItemSort.SortState.Grouped, ItemSort.SortState.Alphabetic,
+					ItemSort.SortState.Unsorted }, ItemSort.SortState.Grouped, AvailableItemsTitle ) );
 
 			// Hook into the available items view being shown event
 			currentList.RevealActive += ( object sender, EventArgs args ) => 
@@ -154,19 +157,10 @@ namespace ShoppingList.Droid
 					StartActivity( new Intent( this, typeof( ShoppingActivity ) ).AddFlags( ActivityFlags.NoHistory ) );
 					Finish();
 				}
-				else if ( item.ItemId == Resource.Id.menuSortItems )
+				else if ( ( item.ItemId == Resource.Id.menuSortItems ) || ( item.ItemId == Resource.Id.menuSortGroups ) ||
+					( item.ItemId == Resource.Id.menuSortNoSort ) )
 				{
-					// Sort by item rather than within groups
-					PersistentStorage.IsSortedByGroup = false;
-
-					ShowOrHideMenuItems();
-
-					availableList.DataSetChanged();
-				}
-				else if ( item.ItemId == Resource.Id.menuSortGroups )
-				{
-					// Sort by group rather than by item
-					PersistentStorage.IsSortedByGroup = true;
+					availableList.SortOrderHandler.SetNext();
 
 					ShowOrHideMenuItems();
 
@@ -181,8 +175,9 @@ namespace ShoppingList.Droid
 		/// </summary>
 		private void ShowOrHideMenuItems()
 		{
-			savedMenu.FindItem( Resource.Id.menuSortGroups ).SetVisible( !PersistentStorage.IsSortedByGroup );
-			savedMenu.FindItem( Resource.Id.menuSortItems ).SetVisible( PersistentStorage.IsSortedByGroup );
+			savedMenu.FindItem( Resource.Id.menuSortGroups ).SetVisible( availableList.SortOrderHandler.Next == ItemSort.SortState.Grouped );
+			savedMenu.FindItem( Resource.Id.menuSortItems ).SetVisible( availableList.SortOrderHandler.Next == ItemSort.SortState.Alphabetic );
+			savedMenu.FindItem( Resource.Id.menuSortNoSort ).SetVisible( availableList.SortOrderHandler.Next == ItemSort.SortState.Unsorted );
 		}
 
 		/// <summary>

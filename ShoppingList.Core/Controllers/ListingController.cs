@@ -36,9 +36,9 @@ namespace ShoppingList.Core.Controllers
 			return quantityToMove;
 		}
 
-		public static Item[] GetItems()
+		public static Item[] GetItems( bool ordered )
 		{
-			return new GroupService().GetItems().ToArray();
+			return new GroupService().GetItems( ordered ).ToArray();
 		}
 
 		public static object[] GetGroupsAndItems()

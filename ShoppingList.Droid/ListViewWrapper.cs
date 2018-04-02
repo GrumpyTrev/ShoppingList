@@ -2,6 +2,7 @@
 
 using Android.App;
 using Android.Widget;
+using ShoppingList.Core;
 using ShoppingList.Core.Model;
 
 namespace ShoppingList.Droid
@@ -29,6 +30,20 @@ namespace ShoppingList.Droid
 
 			// Let derived classes initialise the listener
 			InitialiseTouchHandler();
+		}
+
+		/// <summary>
+		/// Create a ListViewWrapper arround the specified views
+		/// </summary>
+		/// <param name="context"></param>
+		/// <param name="wrappedView"></param>
+		/// <param name="revealView"></param>
+		/// <param name="title"></param>
+		/// <param name="orderHandler"></param>
+		public ListViewWrapper( Activity context, ListView wrappedView, ListView revealView, string title, ItemSort orderHandler ) :
+			this( context, wrappedView, revealView, title )
+		{
+			SortOrderHandler = orderHandler;
 		}
 
 		/// <summary>
@@ -173,5 +188,10 @@ namespace ShoppingList.Droid
 		/// The touch listener for this class
 		/// </summary>
 		protected ListViewTouchListener Listener { get; private set; }
+
+		/// <summary>
+		/// The sort order handler provided for derived classes
+		/// </summary>
+		public ItemSort SortOrderHandler { get; private set; } = null;
 	}
 }

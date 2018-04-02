@@ -1,43 +1,52 @@
 ﻿
+using System.Collections.Generic;
+
 namespace ShoppingList.Core
 {
 	public class PersistentStorage
 	{
+		public static bool GetBoolItem( string itemName, bool defaultState )
+		{
+			if ( cachedItems.ContainsKey( itemName ) == false )
+			{
+				cachedItems[ itemName ] = StorageMechanism.GetBoolItem( itemName, defaultState );
+			}
+
+			return ( bool )cachedItems[ itemName ];
+		}
+
+		public static void SetBoolItem( string itemName, bool state )
+		{
+			cachedItems[ itemName ] = state;
+			StorageMechanism.SetBoolItem( itemName, state );
+		}
+
+		public static string GetStringItem( string itemName, string defaultState )
+		{
+			if ( cachedItems.ContainsKey( itemName ) == false )
+			{
+				cachedItems[ itemName ] = StorageMechanism.GetStringItem( itemName, defaultState );
+			}
+
+			return ( string )cachedItems[ itemName ];
+		}
+
+		public static void SetStringItem( string itemName, string state )
+		{
+			cachedItems[ itemName ] = state;
+			StorageMechanism.SetStringItem( itemName, state );
+		}
+
 		public static bool IsShopping
 		{
 			get
 			{
-				if ( isShopping == null )
-				{
-					isShopping = StorageMechanism.GetBoolItem( IsShoppingStateString, true );
-				}
-
-				return isShopping.Value;
+				return GetBoolItem( IsShoppingStateString, true );
 			}
 
 			set
 			{
-				isShopping = value;
-				StorageMechanism.SetBoolItem( IsShoppingStateString, isShopping.Value );
-			}
-		}
-
-		public static bool IsSortedByGroup
-		{
-			get
-			{
-				if ( isSortedByGroup == null )
-				{
-					isSortedByGroup = StorageMechanism.GetBoolItem( IsSortedByGroupString, true );
-				}
-
-				return isSortedByGroup.Value;
-			}
-
-			set
-			{
-				isSortedByGroup = value;
-				StorageMechanism.SetBoolItem( IsSortedByGroupString, isSortedByGroup.Value );
+				SetBoolItem( IsShoppingStateString, value );
 			}
 		}
 
@@ -49,19 +58,13 @@ namespace ShoppingList.Core
 		= null;
 
 		/// <summary>
-		/// Local copy of the IsShopping persisted value
+		/// Some items that have already been retrived from persistent storage
 		/// </summary>
-		private static bool? isShopping = null;
-
-		/// <summary>
-		/// Local copy of the IsSortedByGroup persisted value
-		/// </summary>
-		private static bool? isSortedByGroup = null;
+		private static Dictionary<string, object> cachedItems = new Dictionary<string, object>();
 
 		/// <summary>
 		/// Storage names
 		/// </summary>
 		private const string IsShoppingStateString = "IsShopping";
-		private const string IsSortedByGroupString = "isSortedByGroup";
 	}
 }
