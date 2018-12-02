@@ -27,6 +27,7 @@ namespace ShoppingList.Droid
 			SetContentView( Resource.Layout.ListingScreen );
 
 			// Initialise the action bar
+			// TODO Wrap this up in a class
 			Toolbar toolbar = FindViewById<Toolbar>( Resource.Id.toolbar );
 			SetSupportActionBar( toolbar );
 			SupportActionBar.SetDisplayShowTitleEnabled( false );
@@ -53,7 +54,6 @@ namespace ShoppingList.Droid
 			// Hook into the available items view being shown event
 			currentList.RevealActive += ( object sender, EventArgs args ) => 
 			{
-				//SupportActionBar.Title = availableList.ToolbarTitle;
 				toolbarTitle.Text = availableList.ToolbarTitle;
 				toolbarSubtitle.Text = "";
 			};
@@ -106,11 +106,23 @@ namespace ShoppingList.Droid
 				currentList.DataSetChanged();
 			};
 
+//			currentItemsView.LongClickable = true;
+			currentItemsView.ItemLongClick += ( object sender, AdapterView.ItemLongClickEventArgs args ) =>
+			{
+				toast.SetText( "Current items long clicked" );
+				toast.Show();
+			};
+
 			// Always start showing the available items list
 			currentItemsView.Visibility = Android.Views.ViewStates.Gone;
 			availableItemsView.TranslationX = 0;
 			// SupportActionBar.Title = availableList.ToolbarTitle;
 			toolbarTitle.Text = availableList.ToolbarTitle;
+		}
+
+		private void CurrentItemsView_LongClick( object sender, View.LongClickEventArgs e )
+		{
+			throw new NotImplementedException();
 		}
 
 		/// <summary>
